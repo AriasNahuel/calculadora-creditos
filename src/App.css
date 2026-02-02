@@ -1,0 +1,365 @@
+:root{
+  /* Marca (logo) */
+  --brand-blue:#0166FB;
+  --brand-deep:#023AC5;
+  --brand-cyan:#4EF4F7;
+  --brand-green:#6DBE37;
+  --brand-yellow:#EECF18;
+  --brand-magenta:#E255D3;
+  --brand-red:#C1141B;
+
+  /* Dark premium (menos “todo azul”) */
+  --bg:#070B14;         /* casi negro azulado */
+  --surface:#0B1326;    /* cards */
+  --surface2:#0A1021;   /* sombra/variación */
+  --text:#FFFFFF;
+  --muted:rgba(255,255,255,.70);
+  --border:rgba(255,255,255,.10);
+
+  --focus: rgba(78,244,247,.40); /* cyan */
+  --focus2: rgba(1,102,251,.25); /* blue */
+}
+
+*{ box-sizing:border-box; }
+html, body { height:100%; }
+
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background:
+  radial-gradient(900px 520px at 15% 0%, rgba(1,102,251,.22) 0%, rgba(7,11,20,0) 58%),
+  radial-gradient(700px 420px at 85% 10%, rgba(78,244,247,.12) 0%, rgba(7,11,20,0) 60%),
+  radial-gradient(800px 520px at 55% 100%, rgba(109,190,55,.07) 0%, rgba(7,11,20,0) 58%),
+  var(--bg);
+color: var(--text);
+}
+
+/* evita scroll horizontal por cualquier “100vw” o sombras */
+body{ overflow-x: hidden; }
+
+#root{
+  min-height: 100vh;
+}
+
+/* ---------- Wrappers (según App.jsx) ---------- */
+.page{
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* Landing wrapper (HOME) */
+.pageHome{
+  width: 100%;
+  min-height: 100vh;
+  padding: 0;          /* la landing maneja su padding */
+  margin: 0 auto;
+}
+
+/* ---------- Header (logo + textos) ---------- */
+.header{
+  padding: max(16px, env(safe-area-inset-top)) 6px 14px;
+}
+
+.headerInner{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.headerText{
+  min-width: 220px;
+}
+
+.header h1{
+  font-size: 1.25rem;
+  margin: 0 0 6px;
+  line-height: 1.25;
+}
+
+.subtitle{
+  margin: 0;
+  color: var(--muted);
+  font-size: .95rem;
+}
+
+.brandLogo{
+  height: clamp(48px, 7vw, 72px);
+  width: auto;
+  max-width: min(320px, 92vw);
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 14px rgba(0,0,0,.35));
+}
+
+@media (max-width: 520px){
+  .headerInner{
+    justify-content: center;
+    text-align: center;
+  }
+  .headerText{
+    min-width: 100%;
+  }
+}
+
+/* ---------- Layout ---------- */
+.grid{
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+.card{
+  border: 1px solid var(--border);
+  background:
+  radial-gradient(700px 240px at 10% 0%, rgba(1,102,251,.10) 0%, rgba(0,0,0,0) 60%),
+  linear-gradient(180deg, var(--surface) 0%, var(--surface2) 100%);
+  box-shadow: 0 16px 38px rgba(0,0,0,.45);
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.card h2{
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+}
+
+/* ---------- Form ---------- */
+.formGrid{
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1fr;
+}
+
+.field label{
+  display:block;
+  font-size: .95rem;
+  margin-bottom: 6px;
+}
+
+.field small{
+  display:block;
+  margin-top: 6px;
+  font-size: .83rem;
+  color: var(--muted);
+}
+
+input, select{
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.04);
+border: 1px solid rgba(255,255,255,.12);
+color: var(--text);
+  outline: none;
+}
+
+input:focus, select:focus{
+  border-color: rgba(78,244,247,.55);
+  box-shadow:
+    0 0 0 3px var(--focus),
+    0 0 0 6px var(--focus2);
+  outline: none;
+}
+
+/* ---------- Resultados ---------- */
+.kpis{
+  display:grid;
+  gap: 10px;
+  grid-template-columns: 1fr;
+}
+
+.kpi{
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  background: rgba(255,255,255,.03);
+}
+
+.kpiLabel{
+  color: var(--muted);
+  font-size: .9rem;
+  margin-bottom: 6px;
+}
+
+.kpiValue{
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: .2px;
+}
+
+.kpi--primary{
+  border-color: rgba(78,244,247,.25);
+  background: rgba(1,102,251,.10);
+}
+
+.kpi--primary .kpiValue{
+  font-size: 1.35rem;
+}
+
+.alert{
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 200, 120, .35);
+  background: rgba(255, 200, 120, .10);
+  color: #ffe8c8;
+}
+
+.details{
+  margin-top: 10px;
+}
+
+.details summary{
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.details p{
+  margin: 10px 0 0;
+  color: var(--muted);
+}
+
+.footer{
+  padding: 14px 4px 6px;
+  color: var(--muted);
+}
+
+/* ---------- Desktop / pantallas medianas+ ---------- */
+@media (min-width: 800px){
+  .grid{
+    grid-template-columns: 1.05fr .95fr;
+    align-items: start;
+  }
+
+  .formGrid{
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .header h1{
+    font-size: 1.5rem;
+  }
+}
+
+/* header simple dentro de cada vista */
+.headerTextOnly{
+  padding: 8px 2px 12px;
+}
+
+/* ---------- Navbar simple (volver) ---------- */
+.navSimple{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding: max(10px, env(safe-area-inset-top)) 6px 10px;
+  backdrop-filter: blur(10px);
+  background: rgba(7,11,20,.55);
+border-bottom: 1px solid rgba(255,255,255,.10);
+  border-radius: 14px;
+}
+
+.backLink{
+  text-decoration: none;
+  font-weight: 700;
+  padding: 10px 12px;
+  border-radius: 12px;
+  color: var(--text);
+background: rgba(11,18,32,.04);
+border: 1px solid var(--border);
+  display: inline-block;
+}
+
+.backLink:hover{
+  background: rgba(78,244,247,.08);
+}
+
+/* ---------- Landing ---------- */
+.homeWrap{
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px 10px;
+}
+
+.homeCard{
+  width: min(520px, 100%);
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(700px 260px at 25% 0%, rgba(1,102,251,.16) 0%, rgba(0,0,0,0) 60%),
+    linear-gradient(180deg, var(--card) 0%, var(--card2) 100%);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 14px 34px rgba(0,0,0,.35);
+  text-align: center;
+}
+
+.homeLogo{
+  height: clamp(78px, 14vw, 120px);
+  width: auto;
+  max-width: 92%;
+  object-fit: contain;
+  display: block;
+  margin: 6px auto 12px;
+  filter: drop-shadow(0 10px 14px rgba(0,0,0,.35));
+}
+
+.homeTitle{
+  margin: 0;
+  font-size: 1.6rem;
+  letter-spacing: .3px;
+}
+
+.homeSubtitle{
+  margin: 6px 0 14px;
+  color: var(--muted);
+  font-size: 1.05rem;
+}
+
+.homeActions{
+  display: grid;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.homeBtn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--text);
+  padding: 14px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  font-weight: 700;
+}
+
+.homeBtn.primary{
+  border-color: rgba(78,244,247,.25);
+  background: rgba(1,102,251,.14);
+}
+
+.homeBtn:hover{
+  background: rgba(78,244,247,.08);
+}
+
+.homeHint{
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: .9rem;
+}
+
+/* --- Override fuerte: por si index.css o algún template toca #root --- */
+html, body, #root{
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#root{
+  max-width: none !important;
+  text-align: initial !important;
+}
