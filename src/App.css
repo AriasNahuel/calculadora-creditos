@@ -32,6 +32,7 @@ body{
   radial-gradient(800px 520px at 55% 100%, rgba(109,190,55,.07) 0%, rgba(7,11,20,0) 58%),
   var(--bg);
 color: var(--text);
+background-repeat: no-repeat;
 }
 
 /* evita scroll horizontal por cualquier “100vw” o sombras */
@@ -86,7 +87,7 @@ body{ overflow-x: hidden; }
 }
 
 .brandLogo{
-  height: clamp(48px, 7vw, 72px);
+  height: clamp(72px, 10vw, 120px);
   width: auto;
   max-width: min(320px, 92vw);
   display: block;
@@ -362,4 +363,314 @@ html, body, #root{
 #root{
   max-width: none !important;
   text-align: initial !important;
+}
+/* -------- Simulador (tabla + export) -------- */
+
+.valueBox{
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.12);
+  color: var(--text);
+}
+
+.tableHeader{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tableActions{
+  display:flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  color: var(--text);
+  padding: 10px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn:hover{
+  background: rgba(78,244,247,.08);
+}
+
+.btn:disabled{
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.btnPrimary{
+  border-color: rgba(78,244,247,.25);
+  background: rgba(1,102,251,.14);
+}
+
+.exportBlock{
+  margin-top: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background:
+    radial-gradient(700px 240px at 10% 0%, rgba(1,102,251,.10) 0%, rgba(0,0,0,0) 60%),
+    linear-gradient(180deg, var(--surface) 0%, var(--surface2) 100%);
+  padding: 14px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-attachment: scroll;
+}
+
+.exportTop{
+  display:flex;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.exportTitle{
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.exportMeta{
+  display:grid;
+  gap: 4px;
+  color: var(--text);
+}
+
+.muted{
+  color: var(--muted);
+}
+
+.tableWrap{
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: auto;
+  background: rgba(255,255,255,.02);
+}
+
+.table{
+  width: 100%;
+  min-width: 360px;
+  border-collapse: collapse;
+  font-size: .95rem;
+}
+
+.table thead th{
+  text-align: left;
+  padding: 10px 10px;
+  color: rgba(255,255,255,.80);
+  background: rgba(255,255,255,.04);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+}
+
+.table tbody td{
+  padding: 10px 10px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.table tbody tr:hover{
+  background: rgba(78,244,247,.06);
+}
+
+.exportNote{
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: .85rem;
+}
+/* --- Export blanco/negro (solo durante export) --- */
+.exportBlock.isExportLight{
+  background: #ffffff !important;
+  border-color: #e5e7eb !important;
+  color: #111827 !important;
+  background-image: none !important;
+}
+
+.exportBlock.isExportLight .muted,
+.exportBlock.isExportLight .exportNote{
+  color: #374151 !important;
+}
+
+.exportBlock.isExportLight .tableWrap{
+  background: #ffffff !important;
+  border-color: #e5e7eb !important;
+}
+
+.exportBlock.isExportLight .table thead th{
+  background: #f3f4f6 !important;
+  color: #111827 !important;
+  border-bottom-color: #e5e7eb !important;
+}
+
+.exportBlock.isExportLight .table tbody td{
+  border-top-color: #e5e7eb !important;
+  color: #111827 !important;
+}
+
+.exportBlock.isExportLight .table tbody tr:hover{
+  background: transparent !important;
+}
+
+/* --- Tabs (Motos / Prendario) --- */
+.tabsCard{
+  margin-bottom: 14px; /* separa del contenido de abajo */
+  padding: 14px;
+}
+
+.tabsRow{
+  display: flex;
+  justify-content: center;   /* centrados */
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tabBtn{
+  padding: 14px 18px;        /* más grande */
+  min-width: 170px;          /* más “botón” */
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  font-weight: 800;
+  cursor: pointer;
+  transition: background .2s, transform .05s;
+}
+
+.tabBtn:hover{
+  background: rgba(78,244,247,.10);
+}
+
+.tabBtn:active{
+  transform: translateY(1px);
+}
+
+.tabBtnActive{
+  border-color: rgba(78,244,247,.30);
+  background: rgba(1,102,251,.18);
+}
+
+/* --- Export buttons centrados --- */
+.tableActions{
+  justify-content: center;
+  width: 100%;
+}
+
+/* --- Input con prefijo $ --- */
+.moneyInput{
+  position: relative;
+  width: 100%;
+}
+
+.moneyPrefix{
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(255,255,255,.85);
+  font-weight: 800;
+  pointer-events: none; /* no bloquea el click */
+}
+
+.moneyField{
+  width: 100%;
+  padding: 12px 12px 12px 34px; /* 👈 espacio para el $ */
+  border-radius: 12px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.12);
+  color: var(--text);
+  outline: none;
+}
+
+.moneyField:focus{
+  border-color: rgba(78,244,247,.55);
+  box-shadow:
+    0 0 0 3px var(--focus),
+    0 0 0 6px var(--focus2);
+}
+.exportTitleRow{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+
+.exportLogo{
+  height: 28px;
+  width: auto;
+  display:block;
+  object-fit: contain;
+}
+
+/* En modo blanco, asegura buen contraste del logo si es oscuro */
+.exportBlock.isExportLight .exportLogo{
+  filter: none;
+}
+
+/* Encabezado export: logo arriba + título debajo, meta a la derecha */
+.exportHead{
+  display:flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.exportBrand{
+  display:flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.exportLogo{
+  height: 28px;
+  width: auto;
+  display:block;
+}
+
+.exportTitle{
+  font-size: 1.2rem;
+  font-weight: 900;
+  letter-spacing: .2px;
+}
+
+/* Meta en “tabla” a la derecha */
+.exportMetaTable{
+  display:grid;
+  gap: 6px;
+  min-width: 240px;
+}
+
+.exportMetaRow{
+  display:grid;
+  grid-template-columns: auto auto;
+  gap: 12px;
+}
+
+.exportMetaLabel{
+  color: var(--muted);
+}
+
+.exportMetaValue{
+  text-align: right;
+  font-weight: 800;
+}
+
+/* En modo blanco/negro */
+.exportBlock.isExportLight .exportMetaLabel{
+  color: #374151 !important;
+}
+.exportBlock.isExportLight .exportMetaValue,
+.exportBlock.isExportLight .exportTitle{
+  color: #111827 !important;
 }
