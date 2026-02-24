@@ -5,16 +5,16 @@ import Simulador from "./components/Simulador";
 import logo from "./assets/Logo Acrecentar con fondo.png";
 
 export default function App() {
-  const [modo, setModo] = useState("moto"); // "moto" | "prendario"
+  const [modo, setModo] = useState("prendario"); // "prendario"
 
   const [precioTotal, setPrecioTotal] = useState("");
   const [entrega, setEntrega] = useState("");
   const [tasaMensualPct, setTasaMensualPct] = useState(8);
 
-  const maxCuotas = modo === "moto" ? 20 : 36;
+  const maxCuotas = 36;
 
   useEffect(() => {
-    setTasaMensualPct(modo === "moto" ? 8 : 5);
+    setTasaMensualPct(5);
   }, [modo]);
 
   return (
@@ -37,27 +37,6 @@ export default function App() {
     </div>
   </div>
 </header>
-
-      {/* Tabs centradas, más grandes y con separación */}
-      <div className="card tabsCard">
-        <div className="tabsRow">
-          <button
-            type="button"
-            onClick={() => setModo("moto")}
-            className={`tabBtn ${modo === "moto" ? "tabBtnActive" : ""}`}
-          >
-            Motos (8%)
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setModo("prendario")}
-            className={`tabBtn ${modo === "prendario" ? "tabBtnActive" : ""}`}
-          >
-            Prendario (5%)
-          </button>
-        </div>
-      </div>
 
       <Simulador
         modo={modo}

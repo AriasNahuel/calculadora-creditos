@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as htmlToImage from "html-to-image";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
@@ -9,20 +9,42 @@ import { buildPlanRows } from "../utils/finance";
 import { formatARS } from "../utils/format";
 
 export default function Simulador({
-  modo, // "moto" | "prendario"
   precioTotal,
   setPrecioTotal,
   entrega,
   setEntrega,
-  tasaMensualPct,
-  setTasaMensualPct,
   maxCuotas,
 }) {
   const exportRef = useRef(null);
 
+  // Crédito prendario: tasa fija interna (no se muestra ni se edita en la UI)
+  const TASA_MENSUAL_PCT = 5;
+  const EXPORT_PREFIX = "prendario";
+
   const [precioText, setPrecioText] = useState(String(precioTotal ?? ""));
   const [entregaText, setEntregaText] = useState(String(entrega ?? ""));
   const [isExportLight, setIsExportLight] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+  if (typeof window === "undefined") return false;
+  return window.matchMedia("(max-width: 640px)").matches;
+});
+
+useEffect(() => {
+  if (typeof window === "undefined") return;
+
+  const mq = window.matchMedia("(max-width: 640px)");
+  const onChange = (e) => setIsMobile(e.matches);
+
+  if (mq.addEventListener) mq.addEventListener("change", onChange);
+  else mq.addListener(onChange);
+
+  setIsMobile(mq.matches);
+
+  return () => {
+    if (mq.removeEventListener) mq.removeEventListener("change", onChange);
+    else mq.removeListener(onChange);
+  };
+}, []);
 
   // Snapshot para export (evita que los valores “desaparezcan” en la captura)
   const [exportSnap, setExportSnap] = useState(null);
@@ -66,10 +88,10 @@ export default function Simulador({
     return buildPlanRows({
       precioTotal: precioNum,
       entrega: entregaNum,
-      tasaMensualPct,
+      tasaMensualPct: TASA_MENSUAL_PCT,
       maxCuotas,
     });
-  }, [precioNum, entregaNum, tasaMensualPct, maxCuotas]);
+  }, [precioNum, entregaNum, maxCuotas]);
 
   const error =
     precioNum <= 0
@@ -79,10 +101,6 @@ export default function Simulador({
       : entregaNum > precioNum
       ? "La entrega no puede ser mayor al precio total."
       : null;
-
-  const subtitle =
-    (modo === "moto" ? "Financiación de motos" : "Crédito prendario") +
-    ` · Cuotas 1 a ${maxCuotas}`;
 
   // Espera doble frame (evita capturar un DOM “a medio pintar”)
   const waitPaint = async () => {
@@ -122,11 +140,10 @@ export default function Simulador({
   };
 
   const buildSnapshot = () => ({
-    title: modo === "moto" ? "Financiación de Motos" : "Crédito Prendario",
+    title: "Crédito Prendario",
     precio: precioNum,
     entrega: entregaNum,
     financiado,
-    tasa: Number(tasaMensualPct) || 0,
     cuotasMax: maxCuotas,
   });
 
@@ -155,7 +172,7 @@ export default function Simulador({
     if (!dataUrl) return;
 
     const link = document.createElement("a");
-    link.download = `${modo}-simulacion.png`;
+    link.download = `${EXPORT_PREFIX}-simulacion.png`;
     link.href = dataUrl;
     link.click();
   };
@@ -206,16 +223,15 @@ export default function Simulador({
       pdf.addImage(imgData, "PNG", centerX, y, scaledWidth, fitHeight);
     }
 
-    pdf.save(`${modo}-simulacion.pdf`);
+    pdf.save(`${EXPORT_PREFIX}-simulacion.pdf`);
   };
 
   // Datos a mostrar en export (snapshot si existe)
   const meta = exportSnap ?? {
-    title: modo === "moto" ? "Financiación de Motos" : "Crédito Prendario",
+    title: "Crédito Prendario",
     precio: precioNum,
     entrega: entregaNum,
     financiado,
-    tasa: Number(tasaMensualPct) || 0,
     cuotasMax: maxCuotas,
   };
 
@@ -279,21 +295,6 @@ export default function Simulador({
           </div>
 
           <div className="field">
-            <label htmlFor="tasa">Tasa mensual (%)</label>
-            <input
-              id="tasa"
-              inputMode="decimal"
-              type="text"
-              value={String(tasaMensualPct)}
-              onChange={(e) => setTasaMensualPct(e.target.value)}
-              placeholder={modo === "moto" ? "Ej: 8" : "Ej: 5"}
-            />
-            <small style={{ opacity: 0.6, fontSize: 13, lineHeight: 1.2 }}>
-              Por defecto: {modo === "moto" ? "8" : "5"}%.
-            </small>
-          </div>
-
-          <div className="field">
             <label>Capital financiado</label>
             <div className="valueBox">{formatARS(financiado)}</div>
             <small style={{ opacity: 0.6, fontSize: 13, lineHeight: 1.2 }}>
@@ -312,20 +313,14 @@ export default function Simulador({
       {/* CARD DERECHA */}
       <section className="card" aria-labelledby="tabla-title" style={{ width: "100%" }}>
         <div className="tableHeader">
-          <div>
-            <h2 id="tabla-title" style={{ marginBottom: 6 }}>
-              Tabla de cuotas
-            </h2>
-            <p className="subtitle" style={{ margin: 0 }}>
-              {subtitle}
-            </p>
-          </div>
 
-          <div className="tableActions">
+          <div className="tableActions"
+          style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
             <button
               type="button"
               className="btn"
               onClick={handleExportImage}
+              style={isMobile ? { width: "100%" } : undefined}
               disabled={!!error}
             >
               Guardar imagen
@@ -334,6 +329,7 @@ export default function Simulador({
               type="button"
               className="btn btnPrimary"
               onClick={handleExportPDF}
+              style={isMobile ? { width: "100%" } : undefined}
               disabled={!!error}
             >
               Exportar PDF
@@ -350,11 +346,11 @@ export default function Simulador({
             className="exportHead"
             style={{
               display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 28,
+              gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+gap: isMobile ? 14 : 28,
+marginBottom: isMobile ? 12 : 18,
               alignItems: "center", 
               justifyItems: "center",
-              marginBottom: 18,
             }}
           >
             <div
@@ -372,8 +368,8 @@ export default function Simulador({
                   alt="Acrecentar"
                   className="exportLogo"
                   style={{
-                    width: 200,
-                    height: 200,
+                    width: isMobile ? 120 : 200,
+height: isMobile ? 120 : 200,
                     objectFit: "contain",
                     display: "block",
                     marginBottom: 8,
@@ -431,21 +427,6 @@ export default function Simulador({
                 <div className="exportMetaLabel" style={{ textAlign: "right" }}>Financiado</div>
                 <div className="exportMetaValue">{formatCurrencyARS(meta.financiado)}</div>
               </div>
-              {!isExportLight && (
-                <div
-                  className="exportMetaRow"
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "max-content max-content",
-                    columnGap: 10,
-                    alignItems: "baseline",
-                    justifyContent: "center",
-                  }}
-                >
-                  <div className="exportMetaLabel" style={{ textAlign: "right" }}>Tasa</div>
-                  <div className="exportMetaValue">{meta.tasa}% mensual</div>
-                </div>
-              )}
             </div>
           </div>
 
